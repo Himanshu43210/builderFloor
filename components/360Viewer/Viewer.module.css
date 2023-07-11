@@ -1,0 +1,141 @@
+.backdrop {
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  background-color: #00000034;
+  top: 0;
+  left: 0;
+  z-index: 100000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 800px;
+  height: 70vh;
+  overflow-y: auto;
+  border-radius: 8px;
+  position: relative;
+  background-color: #fff;
+  padding: 55px 25px 15px 25px;
+  box-sizing: border-box;
+  transform: translateY(700px);
+  transition: 0.2s;
+}
+
+@media screen and (min-width: 300px) and (max-width: 1024px) {
+  .container {
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+    padding: 0;
+    position: inherit;
+    overflow-y: auto;
+  }
+  .backdrop {
+    background-color: #fff;
+    align-items: flex-start;
+    z-index: 999999999999999999999;
+    overflow-y: auto;
+  }
+  .canvas{
+    border-radius: 0 !important;
+    height: 100vw !important;
+  }
+  .canvas canvas {
+    border-radius: 0 !important;
+  }
+  .crossContainer{
+    top: 0px !important;
+    margin-top:40px !important;
+  }
+}
+
+
+.crossContainer {
+  width: 26px;
+  height: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin: 38px 0 0 0;
+  z-index: 15;
+  position: absolute;
+  top: -10px;
+  right: 15px;
+}
+
+.crossContainer div {
+  width: 26px;
+  height: 3px;
+  background-color: #000;
+  transform: rotateX(0deg);
+}
+
+.crossContainer div:nth-child(1) {
+  /* transform:translateY(9px) rotate(45deg) !important;
+        z-index: 12; */
+  z-index: 13;
+  transform: rotate(45deg) !important;
+  /* .three{ */
+  /* } */
+}
+
+.crossContainer div:nth-child(2) {
+  transform: translateY(-17px) rotate(-45deg) !important;
+  z-index: 12;
+}
+
+.canvas {
+  width: 100%;
+  height: 600px;
+  border-radius: 18px;
+  position: relative;
+}
+
+.canvas canvas {
+  border-radius: 14px;
+}
+
+.translateContainer {
+  transform: translateY(0px);
+}
+
+/* .title {
+
+} */
+
+.buttonContainer {
+  width: 200px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #fff;
+  background: #000;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.buttonContainer div {
+  padding: 5px 0;
+  text-transform: capitalize;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.clicked {
+  background-color: #fff;
+  color: #000;
+}
