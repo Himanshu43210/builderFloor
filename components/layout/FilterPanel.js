@@ -15,6 +15,9 @@ import {
   Chip,
   Box,
   Slider,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from "@mui/material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import MenuIcon from "@mui/icons-material/Menu"
@@ -27,6 +30,9 @@ const FilterPanel = () => {
   const [propertyType, setPropertyType] = React.useState("")
   const [budget, setBudget] = React.useState([0,0])
   const [bedrooms, setBedrooms] = React.useState([])
+  const [constructionStatus, setConstructionStatus] = React.useState("")
+  const [postedBy, setPostedBy] = React.useState([])
+  const [area, setArea] = React.useState([0, 0])
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -40,16 +46,28 @@ const FilterPanel = () => {
     const name = event.target.name
     if (name === "propertyType") setPropertyType(event.target.value)
     if (name === "bedrooms") setBedrooms(event.target.value)
+    if (name === "postedBy") setPostedBy(event.target.value)
   }
 
   const handleBudgetChange = (event, newValue) => {
     setBudget(newValue);
   };
 
+  const handleAreaChange = (event, newValue) => {
+    setArea(newValue);
+  };
+
+  const handleStatusChange = (event) => {
+    setConstructionStatus(event.target.value);
+  };
+
   const clearFilter = (filter,c) => {
     if (filter === "propertyType") setPropertyType("")
     if (filter === "budget") setBudget([0, 0])
     if (filter === "bedrooms") setBedrooms(prev => prev.filter(t=> t!==c))
+    if (filter === "constructionStatus") setConstructionStatus("")
+    if (filter === "postedBy") setPostedBy(prev => prev.filter(t=> t!==c))
+    if (filter === "area") setArea([0, 0])
   }
 
   const filterContent = (
@@ -59,8 +77,12 @@ const FilterPanel = () => {
         {propertyType && <Chip label={propertyType} onDelete={() => clearFilter("propertyType")} color="primary" m={1} />}
         {budget && budget.map(b=> b!==0 && <Chip label={"price : "+ b} onDelete={() => clearFilter("budget")} color="primary" m={1} />)}
         {bedrooms && bedrooms.map(c=><Chip label={c} onDelete={() => clearFilter("bedrooms",c)} color="primary" m={1} />)}
+        {constructionStatus && <Chip label={constructionStatus} onDelete={() => clearFilter("constructionStatus")} color="primary" m={1} />}
+        {postedBy && postedBy.map(c=><Chip label={c} onDelete={() => clearFilter("postedBy",c)} color="primary" m={1} />)}
+        {area && area.map(a=> a!==0 && <Chip label={"Area : "+ a} onDelete={() => clearFilter("area")} color="primary" m={1} />)}
       </Box>
 
+      
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
           <Typography>Property Type</Typography>
@@ -99,6 +121,44 @@ const FilterPanel = () => {
               <MenuItem value={"5 BHK"}>5 BHK</MenuItem>
             </Select>
           </FormControl>
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel4a-content">
+          <Typography>Construction Status</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <FormControl component="fieldset">
+            <RadioGroup aria-label="construction-status" name="constructionStatus" value={constructionStatus} onChange={handleStatusChange}>
+              <FormControlLabel value="Ready" control={<Radio />} label="Ready" />
+              <FormControlLabel value="Under Construction" control={<Radio />} label="Under Construction" />
+            </RadioGroup>
+          </FormControl>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel5a-content">
+          <Typography>Posted By</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <FormControl fullWidth>
+            <InputLabel id="postedBy-label">Posted By</InputLabel>
+            <Select labelId="postedBy-label" id="postedBy" multiple value={postedBy} onChange={handleChange} label="Posted By" name="postedBy">
+              <MenuItem value={"Owner"}>Owner</MenuItem>
+              <MenuItem value={"Dealer"}>Dealer</MenuItem>
+              <MenuItem value={"Builder"}>Builder</MenuItem>
+            </Select>
+          </FormControl>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel6a-content">
+          <Typography>Area</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography gutterBottom>Area (in sq ft)</Typography>
+          <Slider value={area} onChange={handleAreaChange} valueLabelDisplay="auto" min={100} max={10000} />
         </AccordionDetails>
       </Accordion>
     </div>
