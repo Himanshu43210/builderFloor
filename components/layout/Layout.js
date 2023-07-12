@@ -3,6 +3,7 @@ import BackToTop from "../elements/BackToTop";
 import Footer from "./Footer";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import FilterPanel from "./FilterPanel";
 
 const Layout = ({ children, headerStyle, footer }) => {
   const [openClass, setOpenClass] = useState("");
@@ -23,6 +24,7 @@ const Layout = ({ children, headerStyle, footer }) => {
     <>
       <div className={openClass && "body-overlay-1 relative"} onClick={handleRemove} />
       <Header handleOpen={handleOpen} headerStyle={headerStyle} />
+      <FilterPanel />
       {/* <Sidebar openClass={openClass} /> */}
       <main className="main" style={{ padding: "0 5%", overflow: "hidden" }}>
         {children}
