@@ -628,7 +628,7 @@ function About2() {
                     C1069, SUSHANT LOK-1, GURGAON ( HARAYANA)
                   </p>
                   <p className="text-body-text color-gray-600">
-                    +91 91118xxxx0
+                  +91 88045 04504
                   </p>
                   <p className="text-body-text color-gray-600">
                     contact@BuilderFloor.com

@@ -7,18 +7,18 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 // Components
-import Slider from "../../components/slider/Slider";
-import Layout from "./../../components/layout/Layout";
-import { BedroomTag, BathroomTag } from "../../components/tag/Tags";
-import PropertyDetailsElement from "../../components/propertyDetails/PropertDetailsElement";
+import Slider from "../components/slider/Slider";
+import Layout from "../components/layout/Layout";
+import { BedroomTag, BathroomTag } from "../components/tag/Tags";
+import PropertyDetailsElement from "../components/propertyDetails/PropertDetailsElement";
 
-import { getCapitalizeWords } from "../../helpers/CamelCaseToCapitalizeWords";
+import { getCapitalizeWords } from "../helpers/CamelCaseToCapitalizeWords";
 import { flexbox } from "@mui/system";
 import { Rating } from "@mui/material";
-import Viewer from "../../components/360Viewer/Viewer360";
+import Viewer from "../components/360Viewer/Viewer360";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
-import useWidth from "../../hooks/useWidth";
+import useWidth from "../hooks/useWidth";
 import { useSelector } from "react-redux";
 const SingleVendor = ({ property }) => {
   console.log(property, "please chec here");
@@ -26,7 +26,20 @@ const SingleVendor = ({ property }) => {
   const currentUrl = Router.asPath;
   // console.log(currentUrl)
   // const property_id = currentUrl.split("/shop/")[1];
-  const property_id = Router.query.id;
+  function getStringAfterLastHyphen(inputString) {
+    // Split the input string into an array using "-" as the separator
+    const parts = inputString.split("-");
+
+    // If there is only one part or the last character of the inputString is "-", return an empty string
+    if (parts.length === 1 || inputString.endsWith("-")) {
+      return "";
+    }
+
+    // Otherwise, return the last part of the array
+    return parts[parts.length - 1];
+  }
+
+  const property_id = getStringAfterLastHyphen(currentUrl);
   // console.log(property_id)
   const [activeIndex, setActiveIndex] = useState(1);
   const [three60, set360] = useState();
@@ -1008,133 +1021,143 @@ const SingleVendor = ({ property }) => {
                       property[506],
                       property[554],
                       property[507],
-                    ].map((property, index) => (
-                      <SwiperSlide key={index}>
-                        <div
-                          className="swiper-item h-[400px] md:mt-[70px] mx-auto  lg:shrink-0 xl:shrink-0 2xl:shrink-0  w-[280px]  hover:scale-[1.05] cursor-pointer flex items-center justify-center relative bg-white rounded-[4px] mt-[50px]"
-                          style={{
-                            border: "1px solid #cacaca",
-                          }}
-                        >
-                          <div className="card-container absolute duration-100 xl:1/4 2xl:1/4  ">
-                            <div
-                              data-wow-delay=".2s"
-                              style={{ height: "100%" }}
-                            >
-                              <Link href={`/shop/${property?._id}`}>
-                                <div className="relative">
-                                  <a>
-                                    <div className="product-img">
-                                      <img
-                                        className="object-fit translate-y-[-10px] xs:w-full  mt-[-31px] h-[190px] w-[280px] hover:w-[100%] rounded-tl-[4px] rounded-tr-[4px]"
-                                        src={
-                                          property?.images?.length !== 0
-                                            ? // ? `https://testerp1apis.nextsolutions.in/${property?.thumbnails?.[0]}`
-                                              property?.thumbnails?.[0]
-                                            : "https://testerp1apis.nextsolutions.in/uploads/A329A-SL1/IMG_20221010_155607_00_merged.jpg"
-                                        }
-                                        alt="Product Image"
-                                      />
-                                    </div>
-                                    {
-                                      // console.log(property.imageType)
-                                    }
-                                    {property &&
-                                      property?.imageType === "360 DEGREE" && (
-                                        <div className="absolute top-3 right-4 ">
-                                          <img
-                                            src="/assets/imgs/icons/360-degrees.png"
-                                            alt="360-degrees icon"
-                                            className="w-[35px] h-[35px]"
-                                          />
-                                        </div>
-                                      )}
-                                  </a>
-                                </div>
-                              </Link>
-                              <div className="product-info px-2 pt-[10px] w-100">
-                                <Link href={`/shop/${property?._id}`}>
-                                  <a>
-                                    <h3
-                                      className="text-body-lead color-gray-700  text-center"
-                                      style={{ lineHeight: "25px" }}
-                                    >
-                                      {property?.title}
-                                    </h3>
-                                  </a>
+                    ].map((property, index) => {
+                      const prooppertyTitle = property.detailTitle.replace(
+                        /\s+/g,
+                        "-"
+                      );
+                      const hreff = "/" + prooppertyTitle + "-" + property._id;
+                      return (
+                        <SwiperSlide key={index}>
+                          <div
+                            className="swiper-item h-[400px] md:mt-[70px] mx-auto  lg:shrink-0 xl:shrink-0 2xl:shrink-0  w-[280px]  hover:scale-[1.05] cursor-pointer flex items-center justify-center relative bg-white rounded-[4px] mt-[50px]"
+                            style={{
+                              border: "1px solid #cacaca",
+                            }}
+                          >
+                            <div className="card-container absolute duration-100 xl:1/4 2xl:1/4  ">
+                              <div
+                                data-wow-delay=".2s"
+                                style={{ height: "100%" }}
+                              >
+                                {/* <Link href={`/shop/${property?._id}`}> */}
+                                <Link href={hreff}>
+                                  <div className="relative">
+                                    <a>
+                                      <div className="product-img">
+                                        <img
+                                          className="object-fit translate-y-[-10px] xs:w-full  mt-[-31px] h-[190px] w-[280px] hover:w-[100%] rounded-tl-[4px] rounded-tr-[4px]"
+                                          src={
+                                            property?.images?.length !== 0
+                                              ? // ? `https://testerp1apis.nextsolutions.in/${property?.thumbnails?.[0]}`
+                                                property?.thumbnails?.[0]
+                                              : "https://testerp1apis.nextsolutions.in/uploads/A329A-SL1/IMG_20221010_155607_00_merged.jpg"
+                                          }
+                                          alt="Product Image"
+                                        />
+                                      </div>
+                                      {
+                                        // console.log(property.imageType)
+                                      }
+                                      {property &&
+                                        property?.imageType ===
+                                          "360 DEGREE" && (
+                                          <div className="absolute top-3 right-4 ">
+                                            <img
+                                              src="/assets/imgs/icons/360-degrees.png"
+                                              alt="360-degrees icon"
+                                              className="w-[35px] h-[35px]"
+                                            />
+                                          </div>
+                                        )}
+                                    </a>
+                                  </div>
                                 </Link>
-                                <div className="d-flex mt-[0px]  justify-center pt-2 whitespace-normal px-2 ">
-                                  <div className="box-prices">
-                                    <span className=" font-medium  ">
-                                      {property?.sectorNumber}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div>
-                                  <div className="text-body-text icon-with-text property-info color-gray-500  px-2 flex justify-evenly shrink-0">
-                                    <div className="flex items-center w-full">
-                                      <img
-                                        className="propicon-2 mr-[8px] translate-y-[-1px]"
-                                        src="/assets/imgs/icons/home.svg"
-                                        alt="Builder Floor"
-                                      />
-                                      <span className="text-[13px]">
-                                        {property?.accommodation}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center w-full">
-                                      <img
-                                        className="propicon-2 mr-[8px] translate-y-[-1px]"
-                                        src="/assets/imgs/page/homepage5/floor.svg"
-                                        alt="Builder Floor"
-                                      />
-                                      <span className="text-[13px]">
-                                        {property?.floor}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center w-full">
-                                      <img
-                                        className="propicon-2 mr-[8px] translate-y-[-1px]"
-                                        src="/assets/imgs/icons/area-svg.svg"
-                                        alt="Builder Floor"
-                                      />
-                                      <span className="text-[13px]">
-                                        {property?.size} Sq.Yd.
+                                <div className="product-info px-2 pt-[10px] w-100">
+                                  {/* <Link href={`/shop/${property?._id}`}> */}
+                                  <Link href={hreff}>
+                                    <a>
+                                      <h3
+                                        className="text-body-lead color-gray-700  text-center"
+                                        style={{ lineHeight: "25px" }}
+                                      >
+                                        {property?.title}
+                                      </h3>
+                                    </a>
+                                  </Link>
+                                  <div className="d-flex mt-[0px]  justify-center pt-2 whitespace-normal px-2 ">
+                                    <div className="box-prices">
+                                      <span className=" font-medium  ">
+                                        {property?.sectorNumber}
                                       </span>
                                     </div>
                                   </div>
-                                  <div className="flex justify-between px-2 items-center">
-                                    <div>
-                                      <Rating
-                                        value={5}
-                                        readOnly
-                                        size="medium"
-                                        style={{ marginTop: "15px" }}
-                                      />
+                                  <div>
+                                    <div className="text-body-text icon-with-text property-info color-gray-500  px-2 flex justify-evenly shrink-0">
+                                      <div className="flex items-center w-full">
+                                        <img
+                                          className="propicon-2 mr-[8px] translate-y-[-1px]"
+                                          src="/assets/imgs/icons/home.svg"
+                                          alt="Builder Floor"
+                                        />
+                                        <span className="text-[13px]">
+                                          {property?.accommodation}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center w-full">
+                                        <img
+                                          className="propicon-2 mr-[8px] translate-y-[-1px]"
+                                          src="/assets/imgs/page/homepage5/floor.svg"
+                                          alt="Builder Floor"
+                                        />
+                                        <span className="text-[13px]">
+                                          {property?.floor}
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center w-full">
+                                        <img
+                                          className="propicon-2 mr-[8px] translate-y-[-1px]"
+                                          src="/assets/imgs/icons/area-svg.svg"
+                                          alt="Builder Floor"
+                                        />
+                                        <span className="text-[13px]">
+                                          {property?.size} Sq.Yd.
+                                        </span>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <button
-                                        onClick={() => {
-                                          console.log(property);
-                                        }}
-                                        type=""
-                                        className="mt-1 px-3 py-2 font-medium bg-[#006D77] text-[#fff] rounded-lg"
-                                      >{`₹
+                                    <div className="flex justify-between px-2 items-center">
+                                      <div>
+                                        <Rating
+                                          value={5}
+                                          readOnly
+                                          size="medium"
+                                          style={{ marginTop: "15px" }}
+                                        />
+                                      </div>
+                                      <div>
+                                        <button
+                                          onClick={() => {
+                                            console.log(property);
+                                          }}
+                                          type=""
+                                          className="mt-1 px-3 py-2 font-medium bg-[#006D77] text-[#fff] rounded-lg"
+                                        >{`₹
                                ${parseFloat(property?.price)
                                  .toExponential()
                                  .toString()
                                  .split("e")[0]
                                  .slice(0, 4)}
                                Cr.`}</button>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </SwiperSlide>
-                    ))}
+                        </SwiperSlide>
+                      );
+                    })}
                   </Swiper>
                 </div>
               </div>
@@ -1360,7 +1383,7 @@ export async function getServerSideProps({ query }) {
   //     apiKey: "083d2bc2-fd14-4a5e-a440-614232b4873e",
   //   }
   // );
-    console.log(query,"please checck here")
+  console.log(query, "please checck here");
   const response = await axios.post(
     // "https://p24x7-server.herokuapp.com/api/p24x7",
     "https://testerp1apis.nextsolutions.in/api/p24x7",

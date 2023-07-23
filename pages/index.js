@@ -275,31 +275,29 @@ function Index8() {
                 positions: [],
                 possession: [],
                 priceRange: priceRange,
-                sizeRange: [180,360],
+                sizeRange: [],
                 pageNumber: 1,
               };
               // const ff=JSON.parse(localStorage.getItem("filter"))?JSON.parse(localStorage.getItem("filter")):state;
               // // const ff=JSON.parse(localStorage.getItem("filter"))?JSON.parse(localStorage.getItem("filter")):state;
               // console.log(ff);
-              
+
               // setCookie(
               //   "property_filters",
               //   JSON.stringify(propertyFilter)
               // );
 
-
-           
               // console.log(realFilters)
               // // router.push(`/search-properties`);
-              
+
               dispatch(setFilters(propertyFilter));
-              
+
               router.push(
                 `/search-properties?filter=${JSON.stringify(propertyFilter)}`
               );
               const str = JSON.stringify(propertyFilter);
               console.log(str);
-              localStorage.setItem("filter",str);
+              localStorage.setItem("filter", str);
             }}
             className=" sm1:hidden w-[100px] bg-[#006d77] text-[#fff] rounded-[8px] f1 cursor-pointer ml-[15px]  h-[50px] flex items-center justify-center font-medium"
           >
@@ -351,7 +349,6 @@ function Index8() {
                   priceRange: priceRange,
                   sizeRange: [],
                 };
-
 
                 // setCookie(
                 //   "property_filters",
@@ -624,6 +621,9 @@ function Index8() {
               <div className="flex flex-wrap justify-center w-[100%] w-full px-[0px] md:gap-x-4">
                 {check &&
                   newProperties.slice(0, 12).map((property, index) => {
+                    const prooppertyTitle = property.detailTitle.replace(/\s+/g, "-");
+                    const hreff = "/" + prooppertyTitle + "-" +property._id;
+                    console.log(prooppertyTitle,hreff);
                     return (
                       <div
                         key={index}
@@ -634,7 +634,15 @@ function Index8() {
                       >
                         <div className="card-container absolute duration-100 xl:1/4 2xl:1/4 ">
                           <div data-wow-delay=".2s" style={{ height: "100%" }}>
-                            <Link href={`/shop/${property?._id}`}>
+                            <Link
+                              onClick={() => {
+                                setLoading(true);
+                                localStorage.removeItem("backUrl");
+                              }}
+                              // router.push();
+                              // href={`/shop/${property?._id}`}
+                              href={hreff}
+                            >
                               <div className="relative">
                                 <a>
                                   <div className="product-img">
@@ -665,7 +673,14 @@ function Index8() {
                               </div>
                             </Link>
                             <div className="product-info px-2 pt-[10px] w-100">
-                              <Link href={`/shop/${property?._id}`}>
+                              <Link
+                                onClick={() => {
+                                  localStorage.removeItem("backUrl");
+                                  setLoading(true);
+                                }}
+                                // href={`/shop/${property?._id}`}
+                                href={hreff}
+                              >
                                 <a>
                                   <h3
                                     className="text-body-lead color-gray-700  text-center"

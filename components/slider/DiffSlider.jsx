@@ -233,7 +233,7 @@ const Loader = () => {
   return (
     <div
       role="status"
-      className="w-[100%] h-[500px] flex items-center justify-center absolute z-10"
+      className="w-[100%] h-[100%] bg-[#ffffff60] backdrop-blur-xl flex items-center justify-center absolute z-10"
     >
       <svg
         aria-hidden="true"
@@ -344,6 +344,25 @@ export const Item = ({ src, images, image360, normal }) => {
 
   console.log(curr, images[curr], "please have a look at it");
 
+  const [deviceCheck, setDeviceChecck] = useState(null);
+  useEffect(() => {
+    if (deviceCheck === null) {
+      const isAppleDevice =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      console.log(isAppleDevice, "please check here");
+      setDeviceChecck(isAppleDevice);
+    }
+  });
+
+  const [loader, setLoader] = useState();
+
+  const TriggerLoader = () => {
+    setLoader(true);
+    setTimeout(() => {
+      setLoader(false);
+    }, 1500);
+  };
+
   return (
     <>
       <>
@@ -375,9 +394,12 @@ export const Item = ({ src, images, image360, normal }) => {
                       //   images[curr - 1],
                       //   curr + 1 - 1
                       // );
-                      setShow(false);
-                      setCurr(curr - 1);
-                      setShow(true);
+                      if (!loader) {
+                        TriggerLoader();
+                        setShow(false);
+                        setCurr(curr - 1);
+                        setShow(true);
+                      }
                     }
                   }}
                   height={15}
@@ -391,15 +413,18 @@ export const Item = ({ src, images, image360, normal }) => {
                   width={15}
                   height={15}
                   onClick={() => {
-                    if (curr !== images.length - 1) {
+                    if (curr !== images.length + normal.length - 1) {
                       // isImageURL(
                       //   // `https://testerp1apis.nextsolutions.in/${images[curr + 1]}`,
                       //   images[curr + 1],
                       //   curr + 1 + 1
                       // );
-                      setShow(false);
-                      setCurr(curr + 1);
-                      setShow(true);
+                      if (!loader) {
+                        TriggerLoader();
+                        setShow(false);
+                        setCurr(curr + 1);
+                        setShow(true);
+                      }
                     }
                   }}
                 />
@@ -448,14 +473,56 @@ export const Item = ({ src, images, image360, normal }) => {
                   alt=""
                 />
               ) : (
-                <iframe
-                  // src={`https://cdn.pannellum.org/2.5/pannellum.htm#panorama=${images[curr]}&autoLoad=true&autoRotate=-2&hfov=200`}
-                  // src={`https://builder-floor-images.vercel.app/uploads/${images[curr]}`}
-                  src={`https://fascinating-queijadas-53a09a.netlify.app/?image=${images[curr]}`}
-                  className="w-[100%] h-[100%]"
-                  frameBorder="0"
-                ></iframe>
+                <div className="w-[100%] h-[100%] relative">
+                  {loader && (
+                    <div className="absolute z-20 w-[100%] h-[100%]">
+                      <Loader />
+                    </div>
+                  )}
+                  <iframe
+                    // src={`https://cdn.pannellum.org/2.5/pannellum.htm#panorama=${images[curr]}&autoLoad=true&autoRotate=-2&hfov=200`}
+                    // src={`https://builder-floor-images.vercel.app/uploads/${images[curr]}`}
+                    src={
+                      // deviceCheck
+                      //   ? `https://cdn.pannellum.org/2.5/pannellum.htm#panorama=${images[curr]}&autoLoad=true&autoRotate=-2&hfov=200`
+                      `https://fascinating-queijadas-53a09a.netlify.app/?image=${
+                        images[curr] + "?not-from-cache-please"
+                      }`
+                    }
+                    className="w-[100%] h-[100%]"
+                    frameBorder="0"
+                  ></iframe>
+                </div>
               )}
+              {/* {normal.map((item, i) => {
+                return (
+                  <React.Fragment key={i}>
+                    {curr - images.length === i && (
+                      <img
+                        src={normal[i]}
+                        className="w-[100%] h-[100%]"
+                        alt=""
+                      />
+                    )}
+                  </React.Fragment>
+                );
+              })}
+              {images.map((item, i) => {
+                return (
+                  <React.Fragment key={i}>
+                    {curr === i && (
+                      <iframe
+                        // src={`https://cdn.pannellum.org/2.5/pannellum.htm#panorama=${images[curr]}&autoLoad=true&autoRotate=-2&hfov=200`}
+                        // src={`https://builder-floor-images.vercel.app/uploads/${images[curr]}`}
+                        // src={`https://fascinating-queijadas-53a09a.netlify.app/?image=${images[curr]}`}
+                        src={`https://fascinating-queijadas-53a09a.netlify.app/?image=${images[i]}`}
+                        className="w-[100%] h-[100%]"
+                        frameBorder="0"
+                      ></iframe>
+                    )}
+                  </React.Fragment>
+                );
+              })} */}
             </div>
           )}
           <div className="w-[25%] h-[100%] flex flex-col md:hidden">
@@ -474,10 +541,13 @@ export const Item = ({ src, images, image360, normal }) => {
                           //   img,
                           //   idx + 1
                           // );
-                          setShow(false);
-                          setCurr(idx);
-                          setShow(true);
-                          setDragging(false);
+                          if (!loader) {
+                            TriggerLoader();
+                            setShow(false);
+                            setCurr(idx);
+                            setShow(true);
+                            setDragging(false);
+                          }
                         }}
                         style={{
                           borderTop: "0",
@@ -511,10 +581,13 @@ export const Item = ({ src, images, image360, normal }) => {
                           //   img,
                           //   idx + 1
                           // );
-                          setShow(false);
-                          setCurr(images.length + idx);
-                          setShow(true);
-                          setDragging(false);
+                          if (!loader) {
+                            TriggerLoader();
+                            setShow(false);
+                            setCurr(images.length + idx);
+                            setShow(true);
+                            setDragging(false);
+                          }
                         }}
                         style={{
                           borderTop: "0",

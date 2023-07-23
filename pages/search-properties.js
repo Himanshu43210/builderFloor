@@ -29,12 +29,14 @@ import FilterPrice from "../components/searchProperties/components/FilterPrice";
 import CustomPagination from "../components/pagination/CustomPagination";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilters } from "../services/scroll";
+import Preloader from "../components/elements/Preloader";
 
 const EachProperty = ({
   topTitle,
   subTitle,
   src,
   propertyTitle,
+  setShow,
   propertyDesc,
   price,
   accommodation,
@@ -46,6 +48,8 @@ const EachProperty = ({
   facing,
   possession,
   imageType,
+  id,
+  setLoading,
 }) => {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
@@ -59,6 +63,11 @@ const EachProperty = ({
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const prooppertyTitle = propertyTitle.replace(/\s+/g, "-");
+  const hreff = "/" + prooppertyTitle + "-" + id;
+  console.log(prooppertyTitle, hreff);
+
   return (
     <>
       {!isMobile && (
@@ -70,7 +79,14 @@ const EachProperty = ({
                 src={src}
                 alt=""
                 onClick={() => {
-                  router.replace(href);
+                  console.log(href, "please have a look at it");
+                  localStorage.setItem("backUrl", href);
+                  setLoading(true);
+                  router.push(hreff);
+                  // router.push({
+                  //   pathname: hreff,
+                  //   query: { id:id,category: propertyTitle },
+                  // });
                 }}
               />
               {imageType && imageType === "360 DEGREE" && (
@@ -88,7 +104,17 @@ const EachProperty = ({
                 <h4>{propertyTitle}</h4>
                 <div className="flex pr-2 items-center ">
                   <div className="px-2 ">
-                    <div className="w-10 h-10 rounded-full  border-1 border-solid border-[#000] flex items-center justify-center bg-[#949494]">
+                    <div
+                      onClick={() => {
+                        let images = "";
+                        console.log("");
+                        setShow({
+                          show: true,
+                          url: hreff,
+                        });
+                      }}
+                      className=" cursor-pointer w-10 h-10 rounded-full  border-1 border-solid border-[#000] flex items-center justify-center bg-[#949494]"
+                    >
                       <img
                         src="/assets/imgs/icons/share.png"
                         alt="share"
@@ -180,27 +206,39 @@ const EachProperty = ({
                     </button>
                   </div>
                   <div className="lg:hidden md:hidden  sm:block xs:block pb-4 whitespace-nowrap pr-2">
-                    <a
-                      href={href}
-                      className="text-bold text-[#666]"
+                    <span
+                      onClick={() => {
+                        console.log(href, "please have a look at it");
+                        localStorage.setItem("backUrl", href);
+                        setLoading(true);
+                        // router.push(href);
+                        router.push(hreff);
+                      }}
+                      className="text-bold cursor-pointer text-[#666]"
                       style={{
                         borderBottom: "1px solid #555",
                       }}
                     >
                       View Details
-                    </a>
+                    </span>
                     &gt;&gt;
                   </div>
                   <div className=" md:block lg:block  sm:hidden  whitespace-nowrap pr-2">
-                    <a
-                      href={href}
-                      className="text-bold text-[#666]"
+                    <span
+                      onClick={() => {
+                        console.log(href, "please have a look at it");
+                        localStorage.setItem("backUrl", href);
+                        setLoading(true);
+                        // router.push(href);
+                        router.push(hreff);
+                      }}
+                      className="text-bold cursor-pointer text-[#666]"
                       style={{
                         borderBottom: "1px solid #555",
                       }}
                     >
                       View Details
-                    </a>
+                    </span>
                     &gt;&gt;
                   </div>
                 </div>
@@ -222,9 +260,15 @@ const EachProperty = ({
               <div className="px-2">
                 <div className="w-7 h-7 rounded-full  border-1 border-solid border-[#000] flex items-center justify-center">
                   <img
+                    onClick={()=>{
+                      setShow({
+                        show: true,
+                        url: hreff,
+                      });
+                    }}
                     src="/assets/imgs/icons/share.png"
                     alt="share"
-                    className="w-4 h-4"
+                    className="w-4 h-4  cursor-pointer"
                   />
                 </div>
               </div>
@@ -246,7 +290,9 @@ const EachProperty = ({
               src={src}
               alt=""
               onClick={() => {
-                router.replace(href);
+                localStorage.setItem("backUrl", href);
+                setLoading(true);
+                router.push(hreff);
               }}
             />
             {imageType && imageType === "360 DEGREE" && (
@@ -340,21 +386,109 @@ const EachProperty = ({
             </div>
 
             <div className=" whitespace-nowrap pr-2">
-              <a
-                href={href}
-                className="text-bold text-[#666]"
+              <span
+                onClick={() => {
+                  localStorage.setItem("backUrl", href);
+                  setLoading(true);
+                  // router.push(href);
+                  router.push(hreff);
+                }}
+                className="cursor-pointer text-bold text-[#666]"
                 style={{
                   borderBottom: "1px solid #555",
                 }}
               >
                 View Details
-              </a>
+              </span>
               &gt;&gt;
             </div>
           </div>
         </div>
       )}
     </>
+  );
+};
+
+const ShareContainer = ({ setShow, url, image }) => {
+  const [copiied, setCopied] = useState(false);
+
+  const handleCopyClick = () => {
+    // Create a temporary textarea element to hold the text to be copied
+    const textarea = document.createElement("textarea");
+    textarea.value = "https://www.builderfloor.com/" + url;
+
+    // Append the textarea to the DOM
+    document.body.appendChild(textarea);
+
+    // Select the text inside the textarea
+    textarea.select();
+    textarea.setSelectionRange(0, 99999); // For mobile devices
+
+    // Copy the text to the clipboard
+    document.execCommand("copy");
+
+    // Remove the temporary textarea from the DOM
+    document.body.removeChild(textarea);
+
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 1500);
+  };
+
+  return (
+    <div
+      className="w-[100%] h-[100vh] fixed px-[5px] bg-[#00000060] flex items-center justify-center"
+      style={{ zIndex: 10000000000 }}
+    >
+      <div className="relative md:w-[100%] px-[50px] md:px-[5px]  py-[20px] flex items-center pt-[30px] justify-center flex-col f1 bg-[#fff] rounded-sm  w-[700px] min-h-[100px]">
+        <img
+          onClick={() => {
+            setShow({ show: false, url: "" });
+          }}
+          alt=""
+          src="/close.svg"
+          className="absolute cursor-pointer top-[10px] right-[10px] w-[22px]"
+        />
+        <iframe
+          // src={`https://cdn.pannellum.org/2.5/pannellum.htm#panorama=${images[curr]}&autoLoad=true&autoRotate=-2&hfov=200`}
+          // src={`https://builder-floor-images.vercel.app/uploads/${images[curr]}`}
+          src={
+            // deviceCheck
+            //   ? `https://cdn.pannellum.org/2.5/pannellum.htm#panorama=${images[curr]}&autoLoad=true&autoRotate=-2&hfov=200`
+            `https://fascinating-queijadas-53a09a.netlify.app/?image=${
+              image + "?not-from-cache-please"
+            }`
+          }
+          className="w-[100%] mb-[20px] md:h-[280px] h-[400px]"
+          frameBorder="0"
+        ></iframe>
+        <p
+          onClick={() => {
+            window.open(
+              `https://wa.me/8804504504?text=Hi! I saw a property ${"https://www.builderfloor.com/" +url} on BuilderFloor.com and i am interested in it. Is it available?`,
+              "_blank"
+            );
+          }}
+          className="underline text-green font-medium mb-[10px] cursor-pointer"
+        >
+          Share to Whatsapp
+        </p>
+        <div
+          style={{
+            backgroundColor: copiied ? "#fff" : "#000",
+            color: !copiied ? "#fff" : "#000",
+            border: !copiied ? "#" : "2px solid #000",
+          }}
+          onClick={() => {
+            handleCopyClick();
+          }}
+          className="w-[100%] duration-0 rounded-sm cursor-pointer flex items-center justify-center text-center font-medium h-[40px] bg-[#000] text-[#fff]"
+        >
+          {copiied ? "Copied to clipboard" : "Copy Url"}
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -446,10 +580,12 @@ function ShopGrid2(props) {
   const dispatch = useDispatch();
 
   const handlePageChange = (page) => {
-    const ff=JSON.parse(localStorage.getItem("filter"))?JSON.parse(localStorage.getItem("filter")):state;
+    const ff = JSON.parse(localStorage.getItem("filter"))
+      ? JSON.parse(localStorage.getItem("filter"))
+      : state;
     const str = JSON.stringify({ ...ff, pageNumber: page });
     console.log(str);
-    localStorage.setItem("filter",str);
+    localStorage.setItem("filter", str);
     dispatch(setFilters({ ...ff, pageNumber: page }));
     setPageNumber(page);
   };
@@ -465,8 +601,22 @@ function ShopGrid2(props) {
 
   const [pricy, setPricy] = useState(priceRange);
 
+  const [share, setShare] = useState({
+    show: false,
+    url: "",
+    image: "",
+  });
+
   return (
     <>
+      {loading && <Preloader />}
+      {share.show && (
+        <ShareContainer
+          url={share.url}
+          setShow={setShare}
+          image={share.image}
+        />
+      )}
       <Layout>
         {view360 && <Viewer close={closeHandler} curr={0} images={url} />}
 
@@ -537,10 +687,12 @@ function ShopGrid2(props) {
             setPropertiesLength={setPropertiesLength}
             propertiesLength={propertiesLength}
             setPageNumber={(e) => {
-              const ff=JSON.parse(localStorage.getItem("filter"))?JSON.parse(localStorage.getItem("filter")):state;
+              const ff = JSON.parse(localStorage.getItem("filter"))
+                ? JSON.parse(localStorage.getItem("filter"))
+                : state;
               const str = JSON.stringify({ ...ff, pageNumber: pageNumber });
               console.log(str);
-              localStorage.setItem("filter",str);
+              localStorage.setItem("filter", str);
               dispatch(setFilters({ ...ff, pageNumber: pageNumber }));
               setPageNumber(e);
             }}
@@ -566,11 +718,22 @@ function ShopGrid2(props) {
                     <EachProperty
                       key={i}
                       topTitle="Fulbrix"
+                      setLoading={setLoading}
                       subTitle={`${""}
                     ${item.sectorNumber}
                    ${getCapitalizeWords(item.city)}, ${getCapitalizeWords(
                         item.state
                       )}`}
+                      setShow={(e) => {
+                        console.log(item);
+                        let image = "";
+                        if (item.images.length > 0) {
+                          image = item.images[0];
+                        } else {
+                          image = item.normalImages[0];
+                        }
+                        setShare({ ...e, image: image });
+                      }}
                       propertyRooms={item.accommodation}
                       // src={`https://testerp1apis.nextsolutions.in/${item.thumbnails[0]}`}
                       src={item.thumbnails[0]}
@@ -589,7 +752,9 @@ function ShopGrid2(props) {
                       facing={item.facing}
                       sectorNumber={item.sectorNumber}
                       possession={item.possession}
-                      href={`/shop/${item._id}`}
+                      // href={`/shop/${item._id}`}
+                      href={`/shop`}
+                      id={item._id}
                       imageType={item.imageType}
                     />
                   );
@@ -643,7 +808,6 @@ function ShopGrid2(props) {
     </>
   );
 }
-
 
 function generateArray(inputArray) {
   let outputSet = new Set();
@@ -758,7 +922,6 @@ export async function getServerSideProps({ req, res, query }) {
           $lte: filterValues.sizeRange?.[1],
         },
       }),
-
     };
   }
 
@@ -792,7 +955,7 @@ export async function getServerSideProps({ req, res, query }) {
       total: response.data ? response.data.length : 0,
       values: filterValues,
       pageNumber: filterValues.pageNumber,
-      filters:filters
+      filters: filters,
     }, // will be passed to the page component as props
   };
 }
